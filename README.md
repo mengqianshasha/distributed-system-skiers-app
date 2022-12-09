@@ -8,7 +8,7 @@ Consumer that populate Redis database: `ski-consumer` folder
 <br/><br/>
 
 ### Populate Data in Consumer
-See in file: `/ski-consumer/src/main/java/ConsumerWorker.java`
+See in file: [/ski-consumer/src/main/java/ConsumerWorker.java](https://github.com/mengqianshasha/distributed-system-skiers-app/blob/main/ski-consumer/src/main/java/ConsumerWorker.java)
 <br/><br/>
 
 ### GET Requests in Servlet
