@@ -2,9 +2,9 @@
 
 ## Basics
 ### Microservices
-Java Servlet: `ski-app` folder <br>
-Client sending POST requests: `ski-client` folder <br>
-Consumer that populate Redis database: `ski-consumer` folder
+* Java Servlet: `ski-app` folder <br>
+* Client sending POST requests: `ski-client` folder <br>
+* Consumer that populate Redis database: `ski-consumer` folder
 <br/><br/>
 
 ### Populate Data in Consumer
