@@ -5,9 +5,11 @@
 Java Servlet: `ski-app` folder
 Client sending POST requests: `ski-client` folder
 Consumer that populate Redis database: `ski-consumer` folder
+<br/><br/>
 
 ### Populate Data in Consumer
 See in file: `/ski-consumer/src/main/java/ConsumerWorker.java`
+<br/><br/>
 
 ### GET Requests in Servlet
 ##### GET `/resorts/{resortID}/seasons/{seasonID}/day/{dayID}/skiers`
