@@ -13,7 +13,7 @@ See in file: [/ski-consumer/src/main/java/ConsumerWorker.java](https://github.co
 
 ### GET Requests in Servlet
 ##### GET `/resorts/{resortID}/seasons/{seasonID}/day/{dayID}/skiers`
-See in file: [ski-app/src/main/java/servlet/ResortServlet.java](https://github.com/mengqianshasha/distributed-system-skiers-app/blob/main/ski-app/src/main/java/servlet/ResortServlet.java)
+See in file: [/ski-app/src/main/java/servlet/ResortServlet.java](https://github.com/mengqianshasha/distributed-system-skiers-app/blob/main/ski-app/src/main/java/servlet/ResortServlet.java)
 <br/><br/>
 
 ##### GET `/skiers/{resortID}/seasons/{seasonID}/days/{dayID}/skiers/{skierID}`
