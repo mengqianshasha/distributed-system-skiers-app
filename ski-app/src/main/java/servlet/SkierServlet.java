@@ -25,7 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-@WebServlet("/servlet/*")
+@WebServlet("/skiers/*")
 public class SkierServlet extends HttpServlet {
     private static final String HOST = "54.187.229.67";
     private static final int PORT = 5672;
