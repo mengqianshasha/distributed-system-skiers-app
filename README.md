@@ -22,3 +22,7 @@ See in file: `/ski-app/src/main/java/servlet/SkierServlet.java`
 
 ##### GET `/skiers/{skierID}/vertical`
 See in file: `/ski-app/src/main/java/servlet/SkierServlet.java`
+<br/><br/>
+
+##### Redis client
+See in file: `/ski-app/src/main/java/redis/RedisClient.java`
