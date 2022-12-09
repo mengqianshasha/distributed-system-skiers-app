@@ -12,11 +12,11 @@ See in file: `/ski-consumer/src/main/java/ConsumerWorker.java`
 ### GET Requests in Servlet
 ##### GET `/resorts/{resortID}/seasons/{seasonID}/day/{dayID}/skiers`
 See in file: `ski-app/src/main/java/servlet/ResortServlet.java`
-\
+<br/><br/>
 
 ##### GET `/skiers/{resortID}/seasons/{seasonID}/days/{dayID}/skiers/{skierID}`
 See in file: `/ski-app/src/main/java/servlet/SkierServlet.java`
-\
+<br/><br/>
 
 ##### GET `/skiers/{skierID}/vertical`
 See in file: `/ski-app/src/main/java/servlet/SkierServlet.java`
