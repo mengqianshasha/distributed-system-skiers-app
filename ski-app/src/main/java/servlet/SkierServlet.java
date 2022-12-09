@@ -1,5 +1,7 @@
 package servlet;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -21,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -35,7 +38,8 @@ public class SkierServlet extends HttpServlet {
     private GenericObjectPool pool;
     private static final String verticalDayPatternStr = "^\\/(\\d+)\\/seasons\\/(\\d+)\\/days\\/(\\d+)\\/skiers\\/(\\d+)$";
     private static final String verticalPatternStr = "^\\/(\\d+)\\/vertical$";
-    public RedisClient redisClient;
+    private RedisClient redisClient;
+    private Cache<String, Response> cache;
 
     @Override
     public void init() {
@@ -52,11 +56,23 @@ public class SkierServlet extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        this.cache = Caffeine.newBuilder()
+                .expireAfterWrite(1, TimeUnit.MINUTES)
+                .maximumSize(10000)
+                .build();
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
         res.setContentType("text/plain");
+
+        /////////  Option1: cache   ///////////
+//        Response response = this.cache.get(req.getPathInfo(), path -> this.getResponse(req));
+//        res.setStatus(response.getStatusCode());
+//        res.getWriter().write(response.getMessage());
+
+        /////////  Option2: no cache   ///////////
         String urlPath = req.getPathInfo();
         Pattern verticalDayPattern = Pattern.compile(verticalDayPatternStr, Pattern.CASE_INSENSITIVE);
         Matcher verticalDayMatcher = verticalDayPattern.matcher(urlPath);
@@ -139,5 +155,41 @@ public class SkierServlet extends HttpServlet {
         int liftId = Integer.parseInt(Utils.getStringFromJsonElement(liftIdElement));
 
         return new Lift(resortId, seasonId, dayId, skierId, time, liftId);
+    }
+
+    private Response getResponse(HttpServletRequest req) {
+        Response res = new Response();
+        String urlPath = req.getPathInfo();
+        Pattern verticalDayPattern = Pattern.compile(verticalDayPatternStr, Pattern.CASE_INSENSITIVE);
+        Matcher verticalDayMatcher = verticalDayPattern.matcher(urlPath);
+        Pattern verticalPattern = Pattern.compile(verticalPatternStr, Pattern.CASE_INSENSITIVE);
+        Matcher verticalMatcher = verticalPattern.matcher(urlPath);
+
+        String totalVertical = null;
+        boolean isValid = false;
+        if (verticalDayMatcher.find()) {
+            isValid = true;
+            totalVertical = this.redisClient.getTotalVerticalForSomeDay(
+                    verticalDayMatcher.group(1),
+                    verticalDayMatcher.group(2),
+                    verticalDayMatcher.group(3),
+                    verticalDayMatcher.group(4));
+        } else if (verticalMatcher.find() && req.getParameter("resort") != null) {
+            isValid = true;
+            totalVertical = this.redisClient.getTotalVertical(verticalMatcher.group(1), req.getParameter("resort"), req.getParameter("season"));
+        }
+
+        if (isValid && totalVertical != null) {
+            res.setStatusCode(200);
+            res.setMessage(totalVertical);
+        } else if (!isValid) {
+            res.setStatusCode(400);
+            res.setMessage("Invalid Input");
+        } else {
+            res.setStatusCode(404);
+            res.setMessage("Data Not Found");
+        }
+
+        return res;
     }
 }
