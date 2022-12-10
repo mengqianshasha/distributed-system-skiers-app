@@ -59,7 +59,7 @@ public class SkierServlet extends HttpServlet {
 
         this.cache = Caffeine.newBuilder()
                 .expireAfterWrite(1, TimeUnit.MINUTES)
-                .maximumSize(10000)
+                .maximumSize(100000)
                 .build();
     }
 
@@ -96,12 +96,12 @@ public class SkierServlet extends HttpServlet {
         if (isValid && totalVertical != null) {
             res.setStatus(200);
             res.getWriter().write(totalVertical);
-        } else if (!isValid) {
+        } else if (isValid) {
+            res.setStatus(200);
+            res.getWriter().write("0");
+        } else {
             res.setStatus(400);
             res.getWriter().write("Invalid Input");
-        } else {
-            res.setStatus(404);
-            res.getWriter().write("Data Not Found");
         }
     }
 
@@ -182,12 +182,12 @@ public class SkierServlet extends HttpServlet {
         if (isValid && totalVertical != null) {
             res.setStatusCode(200);
             res.setMessage(totalVertical);
-        } else if (!isValid) {
+        } else if (isValid) {
+            res.setStatusCode(200);
+            res.setMessage("0");
+        } else {
             res.setStatusCode(400);
             res.setMessage("Invalid Input");
-        } else {
-            res.setStatusCode(404);
-            res.setMessage("Data Not Found");
         }
 
         return res;

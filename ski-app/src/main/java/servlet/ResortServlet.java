@@ -32,32 +32,32 @@ public class ResortServlet extends HttpServlet {
         res.setContentType("text/plain");
 
         /////////  Option1: cache   ///////////
-//        Response response = this.cache.get(req.getPathInfo(), path -> this.getResponse(req));
-//        res.setStatus(response.getStatusCode());
-//        res.getWriter().write(response.getMessage());
+        Response response = this.cache.get(req.getPathInfo(), path -> this.getResponse(req));
+        res.setStatus(response.getStatusCode());
+        res.getWriter().write(response.getMessage());
 
         /////////  Option2: no cache   ///////////
-        String urlPath = req.getPathInfo();
-        Pattern numOfSkiersPattern = Pattern.compile(numOfSkiersPatternStr, Pattern.CASE_INSENSITIVE);
-        Matcher numOfSkiersMatcher = numOfSkiersPattern.matcher(urlPath);
-
-        long numOfSkiers = 0;
-        boolean isValid = false;
-        if (numOfSkiersMatcher.find()) {
-            isValid = true;
-            numOfSkiers = this.redisClient.getNumOfSkiers(numOfSkiersMatcher.group(1), numOfSkiersMatcher.group(2), numOfSkiersMatcher.group(3));
-        }
-
-        if (isValid && numOfSkiers != 0) {
-            res.setStatus(200);
-            res.getWriter().write(Long.toString(numOfSkiers));
-        } else if (!isValid) {
-            res.setStatus(400);
-            res.getWriter().write("Invalid Input");
-        } else {
-            res.setStatus(404);
-            res.getWriter().write("Data Not Found");
-        }
+//        String urlPath = req.getPathInfo();
+//        Pattern numOfSkiersPattern = Pattern.compile(numOfSkiersPatternStr, Pattern.CASE_INSENSITIVE);
+//        Matcher numOfSkiersMatcher = numOfSkiersPattern.matcher(urlPath);
+//
+//        long numOfSkiers = 0;
+//        boolean isValid = false;
+//        if (numOfSkiersMatcher.find()) {
+//            isValid = true;
+//            numOfSkiers = this.redisClient.getNumOfSkiers(numOfSkiersMatcher.group(1), numOfSkiersMatcher.group(2), numOfSkiersMatcher.group(3));
+//        }
+//
+//        if (isValid && numOfSkiers != 0) {
+//            res.setStatus(200);
+//            res.getWriter().write(Long.toString(numOfSkiers));
+//        } else if (!isValid) {
+//            res.setStatus(400);
+//            res.getWriter().write("Invalid Input");
+//        } else {
+//            res.setStatus(404);
+//            res.getWriter().write("Data Not Found");
+//        }
     }
 
     private Response getResponse(HttpServletRequest req) {
