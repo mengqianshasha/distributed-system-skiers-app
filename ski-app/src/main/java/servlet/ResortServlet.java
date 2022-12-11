@@ -23,7 +23,7 @@ public class ResortServlet extends HttpServlet {
         this.redisClient = new RedisClient();
         this.cache = Caffeine.newBuilder()
                 .expireAfterWrite(1, TimeUnit.MINUTES)
-                .maximumSize(1000)
+                .maximumSize(100)
                 .build();
     }
 

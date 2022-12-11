@@ -39,7 +39,7 @@ public class SkierServlet extends HttpServlet {
     private static final String verticalDayPatternStr = "^\\/(\\d+)\\/seasons\\/(\\d+)\\/days\\/(\\d+)\\/skiers\\/(\\d+)$";
     private static final String verticalPatternStr = "^\\/(\\d+)\\/vertical$";
     private RedisClient redisClient;
-    private Cache<String, Response> cache;
+//    private Cache<String, Response> cache;
 
     @Override
     public void init() {
@@ -57,10 +57,10 @@ public class SkierServlet extends HttpServlet {
             e.printStackTrace();
         }
 
-        this.cache = Caffeine.newBuilder()
-                .expireAfterWrite(1, TimeUnit.MINUTES)
-                .maximumSize(100000)
-                .build();
+//        this.cache = Caffeine.newBuilder()
+//                .expireAfterWrite(1, TimeUnit.MINUTES)
+//                .maximumSize(1000)
+//                .build();
     }
 
     @Override
