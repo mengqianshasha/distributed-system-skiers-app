@@ -2,19 +2,21 @@ package servlet;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.google.gson.JsonObject;
 import redis.RedisClient;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @WebServlet("/resorts/*")
 public class ResortServlet extends HttpServlet {
-    private static final String numOfSkiersPatternStr = "^\\/(\\d+)\\/seasons\\/(\\d+)\\/day\\/(\\d+)\\/skiers$";
+    private static final String NUM_OF_SKIERS_PATTERN_STR = "^\\/(\\d+)\\/seasons\\/(\\d+)\\/day\\/(\\d+)\\/skiers$";
     private RedisClient redisClient;
     private Cache<String, Response> cache;
 
@@ -29,12 +31,22 @@ public class ResortServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        res.setContentType("text/plain");
+        res.setContentType("application/json");
+        res.setCharacterEncoding("UTF-8");
+        JsonObject resObj = new JsonObject();
+        PrintWriter out = res.getWriter();
 
         /////////  Option1: cache   ///////////
         Response response = this.cache.get(req.getPathInfo(), path -> this.getResponse(req));
         res.setStatus(response.getStatusCode());
-        res.getWriter().write(response.getMessage());
+        if (res.getStatus() == 200) {
+            resObj.addProperty("time", "Mission Ridge");
+            resObj.addProperty("numSkiers", response.getMessage());
+        } else {
+            resObj.addProperty("message", response.getMessage());
+        }
+
+        out.print(resObj);
 
         /////////  Option2: no cache   ///////////
 //        String urlPath = req.getPathInfo();
@@ -62,7 +74,7 @@ public class ResortServlet extends HttpServlet {
 
     private Response getResponse(HttpServletRequest req) {
         String urlPath = req.getPathInfo();
-        Pattern numOfSkiersPattern = Pattern.compile(numOfSkiersPatternStr, Pattern.CASE_INSENSITIVE);
+        Pattern numOfSkiersPattern = Pattern.compile(NUM_OF_SKIERS_PATTERN_STR, Pattern.CASE_INSENSITIVE);
         Matcher numOfSkiersMatcher = numOfSkiersPattern.matcher(urlPath);
 
         long numOfSkiers = 0;

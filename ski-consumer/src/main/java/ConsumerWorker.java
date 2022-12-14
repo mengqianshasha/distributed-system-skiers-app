@@ -14,7 +14,7 @@ public class ConsumerWorker implements Runnable {
     private String queueName;
     private final Channel channel;
     private final ConcurrentHashMap<Integer, List<Lift>> lifts;
-    private static final boolean AUTO_ACK = true;
+    private static final boolean AUTO_ACK = false;
     private final JedisPool jedisPool;
 
     public ConsumerWorker(String queueName, Channel channel, ConcurrentHashMap<Integer, List<Lift>> lifts, JedisPool jedisPool) {
@@ -52,6 +52,8 @@ public class ConsumerWorker implements Runnable {
                 t.exec();
             } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                this.channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
             }
         };
 
